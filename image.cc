@@ -21,6 +21,7 @@ image::image(string filename): m_filename(filename) {
 
 int
 image::readImage() {
+	gil::png_read_image(m_filename, m_im);
 
 	return 0;
 }
