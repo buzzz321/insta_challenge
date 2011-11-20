@@ -1,7 +1,7 @@
 env = Environment()  # Initialize the environment
 
 env.Append(CCFLAGS='-Wall --pedantic')
-env.Append(LIBS = ['png'])
+env.Append(LIBS = ['png', 'freeimage'])
 env.Program(target = 'insta', source = ["main.cc", "image.cc"])
 
 #lib_target  = "hello"
