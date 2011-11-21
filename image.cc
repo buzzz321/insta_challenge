@@ -11,77 +11,66 @@
 #include <iostream>
 
 using namespace std;
-using namespace boost;
 
 image::image() :
-		m_filename("") {
+		m_filename(""), m_image(NULL), m_width(0), m_height(0), m_shredds(0) {
 	FreeImage_Initialise();
 }
 
 image::image(string filename) :
-		m_filename(filename) {
+		m_filename(filename), m_image(NULL), m_width(0), m_height(0), m_shredds(
+				0) {
 	FreeImage_Initialise();
 }
 
-/* gil version..
-int image::readImage() {
-	try {
-		//gil::png_read_image(m_filename, m_im);
-		gil::png_read_image(m_filename, dynamic_img);
+//void image::shredImage() {
+//	unsigned int width = FreeImage_GetWidth(m_image);
+//
+//	FIBITMAP *bitmap = FreeImage_Copy(m_image, SHRED_WIDTH,
+//			FreeImage_GetHeight(m_image), SHRED_WIDTH + SHRED_WIDTH, 0);
+//
+//	FreeImage_Unload(bitmap);
+//}
 
-	} catch (std::exception &ex) {
-		cout << ex.what() << endl;
+std::vector<std::vector<RGBQUAD> > image::getShredPixelBorders(
+		unsigned int shredNumber) {
+	std::vector<std::vector<RGBQUAD> > retVal;
+
+	if (shredNumber < m_shredds) {
+		for (unsigned int xpos = 0; xpos < 2; ++xpos) {
+			vector<RGBQUAD> row;
+			RGBQUAD quad;
+			for (unsigned int ypos = 0; ypos < m_height; ++ypos) {
+				FreeImage_GetPixelColor(m_image, (unsigned int)((xpos + shredNumber) * SHRED_WIDTH), ypos, &quad);
+				row.push_back(quad);
+			}
+			retVal.push_back(row);
+		}
 	}
-	return 0;
+
+	return retVal;
 }
-*/
-int image::readPNGInfo() {
-	FREE_IMAGE_FORMAT fif = FreeImage_GetFileType(m_filename.data(), 0); //Automatocally detects the format(from over 20 formats!)
+
+bool image::loadPNG() {
+	FREE_IMAGE_FORMAT fif = FreeImage_GetFileType(m_filename.data(), 0); //Automatically detects the format(from over 20 formats!)
 	cout << FreeImage_GetFormatFromFIF(fif) << endl;
 
-	FIBITMAP *imagen = FreeImage_Load(fif, m_filename.data());
+	m_image = FreeImage_Load(fif, m_filename.data());
 
-	FREE_IMAGE_COLOR_TYPE ct = FreeImage_GetColorType(imagen);
-	switch (ct) {
-	case FIC_MINISBLACK:
-		cout << "FIC_MINISBLACK: " << ct << endl;
-		break;
-	case FIC_MINISWHITE:
-		cout << "FIC_MINISWHITE: " << ct << endl;
-		break;
-	case FIC_PALETTE:
-		cout << "FIC_PALETTE: " << ct << endl;
-		break;
-	case FIC_RGB:
-		cout << "FIC_RGB: " << ct << endl;
-		break;
-	case FIC_RGBALPHA:
-		cout << "FIC_RGBALPHA: " << ct << endl;
-		break;
-	case FIC_CMYK:
-		cout << "FIC_CMYK: " << ct << endl;
-		break;
-	default:
-		cout << "unknown format: " << ct << endl;
-		break;
+	if (m_image) {
+		m_width = FreeImage_GetWidth(m_image);
+		m_height = FreeImage_GetHeight(m_image);
+
+		m_shredds = m_width / SHRED_WIDTH;
 	}
-
-	cout << "BPP: " << FreeImage_GetBPP(imagen) << endl;
-
-	FIBITMAP *bitmap = FreeImage_Copy(imagen, 32, FreeImage_GetHeight(imagen), 32 + 32, 0);
-
-	if (FreeImage_Save(FIF_PNG, bitmap, "sub.png", 0)) {
-	// bitmap successfully saved!
-	}
-
-	FreeImage_Unload(bitmap);
-	FreeImage_Unload(imagen);
-
-	return 0;
+	return m_image != NULL;
 }
 
 image::~image() {
 	// TODO Auto-generated destructor stub
+	if (m_image != NULL) {
+		FreeImage_Unload(m_image);
+	}
 	FreeImage_DeInitialise();
 }
 
