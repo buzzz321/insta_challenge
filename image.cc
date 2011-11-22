@@ -12,9 +12,27 @@
 
 using namespace std;
 
+/**
+ *  FreeImage error handler
+ *      @param fif Format / Plugin responsible for the error 
+ *          @param message Error message
+ *          */
+void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char *message) {
+        cout << "\n*** ";
+            if(fif != FIF_UNKNOWN) {
+                        cout << FreeImage_GetFormatFromFIF(fif) << " Format\n";
+                            }
+                cout << message;
+                    cout << " ***\n";
+}
+
+
+
 image::image() :
 		m_filename(""), m_image(NULL), m_width(0), m_height(0), m_shredds(0) {
 	FreeImage_Initialise();
+        FreeImage_SetOutputMessage(FreeImageErrorHandler);
+
 }
 
 image::image(string filename) :
