@@ -14,7 +14,7 @@
 #include <FreeImage.h>
 
 
-class image {
+class Image {
 private:
 	std::string m_filename;
 	std::vector<FIBITMAP *> m_image_shredds();
@@ -25,12 +25,17 @@ private:
 
 
 public:
-	image();
-	image(std::string filename);
+	Image();
+	Image(std::string filename);
 
 	bool loadPNG();
-	std::vector<std::vector<RGBQUAD> > getShredPixelBorders(unsigned int shredNumber);
-	virtual ~image();
+	std::vector<RGBQUAD> getShredPixelBorders(unsigned int shrednumber, bool leftside);
+	virtual ~Image();
+    std::string getFilename() const;
+    void setFilename(std::string filename);
+    unsigned int getHeight() const;
+    unsigned int getShredds() const;
+    unsigned int getWidth() const;
 //    void shredImage();
     static const int SHRED_WIDTH = 32;
 };
