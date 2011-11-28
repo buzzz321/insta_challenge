@@ -26,7 +26,7 @@ int ImageControl::unshredd() {
         std::cout << shreddnr << std::endl;
 
         std::vector<RGBQUAD> rightborder = m_myImage.getShredPixelBorders(shreddnr, false);
-        for (unsigned int testshredd = 1; testshredd < m_myImage.getShredds(); ++testshredd) {
+        for (unsigned int testshredd = 0; testshredd < m_myImage.getShredds(); ++testshredd) {
             std::vector<RGBQUAD> leftborder = m_myImage.getShredPixelBorders(testshredd, true);
         }
 
