@@ -12,10 +12,12 @@
 class ImageControl {
 private:
 	Image m_myImage;
+
 public:
 	ImageControl();
 	ImageControl(std::string filename);
 
+	int calc(std::vector<RGBQUAD> leftborder, std::vector<RGBQUAD> rightborder);
 	int unshredd();
 	virtual ~ImageControl();
 };
