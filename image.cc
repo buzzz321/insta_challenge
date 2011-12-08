@@ -54,11 +54,13 @@ std::vector<RGBQUAD> Image::getShredPixelBorders(unsigned int shrednumber,
 
     if (shrednumber < m_shredds) {
         unsigned int borderno = leftside ? 0 : 1;
+        
+        //std::cout << " xpos:" << ((borderno + shrednumber) * (SHRED_WIDTH - borderno)) << ((borderno==0) ?" left":" right") << std::endl;
 
         RGBQUAD quad;
         for (unsigned int ypos = 0; ypos < m_height; ++ypos) {
             FreeImage_GetPixelColor(m_image,
-                    (unsigned int) ((borderno + shrednumber) * SHRED_WIDTH), ypos,
+                    (unsigned int) ((borderno + shrednumber) * (SHRED_WIDTH - borderno)), ypos,
                     &quad);
             retVal.push_back(quad);
         }
